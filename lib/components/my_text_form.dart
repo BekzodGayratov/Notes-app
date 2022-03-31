@@ -11,11 +11,15 @@ class MyTextForm extends StatelessWidget {
     return TextFormField(
       controller: controller,
       decoration: InputDecoration(
-        hintText: hintText,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        )
-      ),
+          hintText: hintText,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          )),
+      validator: (v) {
+        if (v!.isEmpty) {
+          return "Bo'sh qoldirish mumkin emas";
+        }
+      },
     );
   }
 }

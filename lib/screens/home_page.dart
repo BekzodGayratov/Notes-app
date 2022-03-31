@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:notes/cubit/home_cubit.dart';
 import 'package:notes/cubit/home_state.dart';
 import 'package:notes/functions/show_add_dialog.dart';
@@ -16,8 +15,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _controllerName = TextEditingController();
+  final _controllerTitle = TextEditingController();
   final _controllerTask = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -47,32 +47,38 @@ class _HomePageState extends State<HomePage> {
                     return Dismissible(
                       key: UniqueKey(),
                       child: ListTile(
+                        leading: Text(index.toString()),
                         title: Text(context
                             .watch<HomeCubit>()
                             .myBox!
-                            .getAt(index)!["name"]),
-                        subtitle: Text(context
-                            .watch<HomeCubit>()
-                            .myBox!
-                            .getAt(index)!["task"],
-                            ),
-                            trailing: Text(context
+                            .getAt(index)!["title"]),
+                        subtitle: Text(
+                          context
+                              .watch<HomeCubit>()
+                              .myBox!
+                              .getAt(index)!["task"],
+                        ),
+                        trailing: Text(context
                             .watch<HomeCubit>()
                             .myBox!
                             .getAt(index)!["time"]),
                       ),
-                      onDismissed: (v) async{
+                      onDismissed: (v) async {
                         context.read<HomeCubit>().deleteDataFromBox(index);
-                        FlutterToastr.show("Xabar o'chirib tashlandi", context);
-                         await NotificationService().showNotification(
-              id: 1,
-              title: "Bildirishnoma",
-              body: "${_controllerTask.text}",
-            );
+                        await NotificationService().showNotification(
+                          id: index,
+                          title: "Bildirishnoma: $index",
+                          body: "Eslatma o'chirib tashlandi",
+                        );
                       },
                       background: Container(
                         color: Colors.red,
-                        child: Row(children: const [Icon(Icons.delete)]),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Icon(Icons.delete),
+                              Icon(Icons.delete)
+                            ]),
                       ),
                     );
                   },
@@ -86,7 +92,7 @@ class _HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
-              showMyDialog(context, _controllerName, _controllerTask);
+              showMyDialog(context, _controllerTitle, _controllerTask,_formKey);
             },
           ),
         );

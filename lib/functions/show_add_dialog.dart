@@ -1,21 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_toastr/flutter_toastr.dart';
 import 'package:notes/components/my_text_form.dart';
 import 'package:notes/cubit/home_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:notes/services/notification_service.dart';
-import 'package:timezone/timezone.dart' as tz;
 
-showMyDialog(BuildContext ctx, TextEditingController controllerName,
-    TextEditingController controllerTask) {
+showMyDialog(BuildContext ctx, TextEditingController controllerTitle,
+    TextEditingController controllerTask, GlobalKey<FormState> formKey) {
   return showDialog(
     context: ctx,
     builder: (context) => AlertDialog(
       title: const Text("Xabarnoma qo'shing"),
-      content: Column(
-        children: [
-          MyTextForm(controller: controllerName, hintText: "Ismingiz"),
-          MyTextForm(controller: controllerTask, hintText: "Vazifangiz"),
-        ],
+      content: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            MyTextForm(
+              controller: controllerTitle,
+              hintText: "Sarlavha",
+            ),
+            MyTextForm(
+              controller: controllerTask,
+              hintText: "Vazifangiz",
+            ),
+          ],
+        ),
       ),
       actions: [
         ElevatedButton(
@@ -26,15 +34,18 @@ showMyDialog(BuildContext ctx, TextEditingController controllerName,
         ElevatedButton(
           child: const Text("Tasdiqlash"),
           onPressed: () {
-           
-            ctx.read<HomeCubit>().addToBox({
-              "name": controllerName.text,
+          if(formKey.currentState!.validate()){
+              ctx.read<HomeCubit>().addToBox({
+              "title": controllerTitle.text,
               "task": controllerTask.text,
               "time": DateTime.now().hour.toString() +
                   ":" +
                   DateTime.now().minute.toString()
             });
+          }
             Navigator.pop(context);
+            FlutterToastr.show("Eslatma muvoffaqqiyatli o'rnatildi", context,
+                duration: 4);
           },
         ),
       ],
