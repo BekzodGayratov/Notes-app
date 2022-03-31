@@ -38,58 +38,66 @@ class _HomePageState extends State<HomePage> {
             centerTitle: true,
             title: const Text("Notice app"),
           ),
-          body: Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return Dismissible(
-                      key: UniqueKey(),
-                      child: ListTile(
-                        leading: Text(
-                          index.toString(),
-                          style: TextStyle(
-                              fontSize: 18.0, fontWeight: FontWeight.w500),
-                        ),
-                        title: Text(context
-                            .watch<HomeCubit>()
-                            .myBox!
-                            .getAt(index)!["title"]),
-                        subtitle: Text(
-                          context
-                              .watch<HomeCubit>()
-                              .myBox!
-                              .getAt(index)!["task"],
-                        ),
-                        trailing: Text(context
-                            .watch<HomeCubit>()
-                            .myBox!
-                            .getAt(index)!["time"]),
+          body: context.watch<HomeCubit>().myBox!.isEmpty
+              ? Center(
+                  child: Image.asset("assets/nodata.gif"),
+                )
+              : Column(
+                  children: [
+                    Expanded(
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return Dismissible(
+                            key: UniqueKey(),
+                            child: ListTile(
+                              leading: Text(
+                                index.toString(),
+                                style: const TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              title: Text(context
+                                  .watch<HomeCubit>()
+                                  .myBox!
+                                  .getAt(index)!["title"]),
+                              subtitle: Text(
+                                context
+                                    .watch<HomeCubit>()
+                                    .myBox!
+                                    .getAt(index)!["task"],
+                              ),
+                              trailing: Text(context
+                                  .watch<HomeCubit>()
+                                  .myBox!
+                                  .getAt(index)!["time"]),
+                            ),
+                            onDismissed: (v) async {
+                              context
+                                  .read<HomeCubit>()
+                                  .deleteDataFromBox(index);
+                              await NotificationService().showNotification(
+                                id: index,
+                                title: "Bildirishnoma: $index",
+                                body: "Eslatma o'chirib tashlandi",
+                              );
+                            },
+                            background: Container(
+                              color: Colors.red,
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Icon(Icons.delete),
+                                    Icon(Icons.delete)
+                                  ]),
+                            ),
+                          );
+                        },
+                        itemCount: context.watch<HomeCubit>().myBox!.length,
                       ),
-                      onDismissed: (v) async {
-                        context.read<HomeCubit>().deleteDataFromBox(index);
-                        await NotificationService().showNotification(
-                          id: index,
-                          title: "Bildirishnoma: $index",
-                          body: "Eslatma o'chirib tashlandi",
-                        );
-                      },
-                      background: Container(
-                        color: Colors.red,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Icon(Icons.delete),
-                              Icon(Icons.delete)
-                            ]),
-                      ),
-                    );
-                  },
-                  itemCount: context.watch<HomeCubit>().myBox!.length,
+                    )
+                  ],
                 ),
-              )
-            ],
-          ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerFloat,
           floatingActionButton: FloatingActionButton(
