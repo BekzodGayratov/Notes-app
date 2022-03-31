@@ -3,6 +3,7 @@ import 'package:notes/components/my_text_form.dart';
 import 'package:notes/cubit/home_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/services/notification_service.dart';
+import 'package:timezone/timezone.dart' as tz;
 
 showMyDialog(BuildContext ctx, TextEditingController controllerName,
     TextEditingController controllerTask) {
@@ -24,14 +25,15 @@ showMyDialog(BuildContext ctx, TextEditingController controllerName,
             child: const Text("Orqaga")),
         ElevatedButton(
           child: const Text("Tasdiqlash"),
-          onPressed: () async{
-              await NotificationService().showNotification(
-                id: 1,
-                title: controllerName.text,
-                body: "siz ${controllerTask.text} qilishingiz kerak",
-              );
-            ctx.read<HomeCubit>().addToBox(
-                {"name": controllerName.text, "task": controllerTask.text});
+          onPressed: () {
+           
+            ctx.read<HomeCubit>().addToBox({
+              "name": controllerName.text,
+              "task": controllerTask.text,
+              "time": DateTime.now().hour.toString() +
+                  ":" +
+                  DateTime.now().minute.toString()
+            });
             Navigator.pop(context);
           },
         ),

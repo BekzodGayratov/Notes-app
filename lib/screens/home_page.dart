@@ -54,11 +54,21 @@ class _HomePageState extends State<HomePage> {
                         subtitle: Text(context
                             .watch<HomeCubit>()
                             .myBox!
-                            .getAt(index)!["task"]),
+                            .getAt(index)!["task"],
+                            ),
+                            trailing: Text(context
+                            .watch<HomeCubit>()
+                            .myBox!
+                            .getAt(index)!["time"]),
                       ),
-                      onDismissed: (v) {
+                      onDismissed: (v) async{
                         context.read<HomeCubit>().deleteDataFromBox(index);
                         FlutterToastr.show("Xabar o'chirib tashlandi", context);
+                         await NotificationService().showNotification(
+              id: 1,
+              title: "Bildirishnoma",
+              body: "${_controllerTask.text}",
+            );
                       },
                       background: Container(
                         color: Colors.red,
