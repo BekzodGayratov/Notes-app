@@ -4,7 +4,6 @@ import 'package:notes/cubit/home_cubit.dart';
 import 'package:notes/cubit/home_state.dart';
 import 'package:notes/functions/show_add_dialog.dart';
 import 'package:notes/services/notification_service.dart';
-import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 
 class HomePage extends StatefulWidget {
@@ -47,7 +46,11 @@ class _HomePageState extends State<HomePage> {
                     return Dismissible(
                       key: UniqueKey(),
                       child: ListTile(
-                        leading: Text(index.toString()),
+                        leading: Text(
+                          index.toString(),
+                          style: TextStyle(
+                              fontSize: 18.0, fontWeight: FontWeight.w500),
+                        ),
                         title: Text(context
                             .watch<HomeCubit>()
                             .myBox!
@@ -92,7 +95,8 @@ class _HomePageState extends State<HomePage> {
           floatingActionButton: FloatingActionButton(
             child: const Icon(Icons.add),
             onPressed: () async {
-              showMyDialog(context, _controllerTitle, _controllerTask,_formKey);
+              showMyDialog(
+                  context, _controllerTitle, _controllerTask, _formKey);
             },
           ),
         );

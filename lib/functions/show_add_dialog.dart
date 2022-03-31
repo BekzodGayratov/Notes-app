@@ -18,6 +18,9 @@ showMyDialog(BuildContext ctx, TextEditingController controllerTitle,
               controller: controllerTitle,
               hintText: "Sarlavha",
             ),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.02,
+            ),
             MyTextForm(
               controller: controllerTask,
               hintText: "Vazifangiz",
@@ -34,18 +37,18 @@ showMyDialog(BuildContext ctx, TextEditingController controllerTitle,
         ElevatedButton(
           child: const Text("Tasdiqlash"),
           onPressed: () {
-          if(formKey.currentState!.validate()){
+            if (formKey.currentState!.validate()) {
               ctx.read<HomeCubit>().addToBox({
-              "title": controllerTitle.text,
-              "task": controllerTask.text,
-              "time": DateTime.now().hour.toString() +
-                  ":" +
-                  DateTime.now().minute.toString()
-            });
-          }
-            Navigator.pop(context);
-            FlutterToastr.show("Eslatma muvoffaqqiyatli o'rnatildi", context,
-                duration: 4);
+                "title": controllerTitle.text,
+                "task": controllerTask.text,
+                "time": DateTime.now().hour.toString() +
+                    ":" +
+                    DateTime.now().minute.toString()
+              });
+              Navigator.pop(context);
+              FlutterToastr.show("Eslatma muvoffaqqiyatli o'rnatildi", context,
+                  duration: 4);
+            }
           },
         ),
       ],
